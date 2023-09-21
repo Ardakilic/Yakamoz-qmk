@@ -19,167 +19,181 @@
 
 enum yakamoz_layers {
   _QWERTY,
-  _COLEMAK,
-  _DVORAK,
   _LOWER,
   _RAISE,
-  _ADJUST
+  _ADJUST,
+  _SPACE,
+  _SODA,
+  _NUMPAD
 };
 
-enum yakamoz_keycodes {
-  QWERTY = SAFE_RANGE,
-  COLEMAK,
-  DVORAK
+// KC_NONUS_BSLASH (\|) is equivalent to ["é] key in Turkish keyboards.
+// KC_GRV (~ `) is equivalent to [<>|] key in Turkish keyboards.
+// KC_SCLN is Turkish s [şŞ] key
+// KC_QUOT is Turkish i [iİ] key
+// KC_COMM is Turkish o [öÖ] key
+// KC_DOT is Turkish c [çÇ] key
+
+// Custom shortcuts specific to Turkish layout
+#define CURLY_OPEN RALT(KC_7)
+#define CURLY_CLOSE RALT(KC_0)
+#define SQUARE_OPEN RALT(KC_8)
+#define SQUARE_CLOSE RALT(KC_9)
+#define DOLLAR_SIGN RALT(KC_4)
+#define BACKSLASH RALT(KC_MINS)
+#define VERTICAL_PIPE RALT(KC_EQL)
+#define BACKTICK RALT(KC_BSLS)
+#define TILDE RALT(KC_RBRC)
+#define NUMBER_SIGN RALT(KC_3)
+#define LOCKSCREEN LCTL(LSFT(KC_PWR)) // Screen Lock shortcut for OSX
+
+/*
+// Unicode Turkish characters, in case it's needed
+enum {
+    TR_C, // ç
+    TR_C_L, // Ç
+    TR_I, // ı
+    TR_I_L, // İ
+    TR_G, // ğ
+    TR_G_L, // Ğ
+    TR_S, // ş
+    TR_S_L, // Ş
+    TR_U, // ü
+    TR_U_L, // Ü
+    TR_O, // ö
+    TR_O_L, // Ö
 };
 
-#define LOWER MO(_LOWER)
-#define RAISE MO(_RAISE)
+// clang-format off
+const uint32_t PROGMEM unicode_map[] = {
+    [TR_C] = 0x00c7,
+    [TR_C_L] = 0x00e7,
+    [TR_I] = 0x0130,
+    [TR_I_L] = 0x0131,
+    [TR_G] = 0x011e,
+    [TR_G_L] = 0x011f,
+    [TR_S] = 0x015e,
+    [TR_S_L] = 0x015f,
+    [TR_U] = 0x00dc,
+    [TR_U_L] = 0x00fc,
+    [TR_O] = 0x00d6,
+    [TR_O_L] = 0x00f6,
+};
+// clang-format on
+*/
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
-/* Qwerty
- * ,-----------------------------------------.             ,-----------------------------------------.
- * | Tab  |   Q  |   W  |   E  |   R  |   T  |             |   Y  |   U  |   I  |   O  |   P  | Bksp |
- * |------+------+------+------+------+------|             |------+------+------+------+------+------|
- * | Esc  |   A  |   S  |   D  |   F  |   G  |             |   H  |   J  |   K  |   L  |   ;  |  '   |
- * |------+------+------+------+------+------|             |------+------+------+------+------+------|
- * | Shift|   Z  |   X  |   C  |   V  |   B  |             |   N  |   M  |   ,  |   .  |   /  |Enter |
- * |------+------+------+------+------+------+-------------+------+------+------+------+------+------|
- * | Caps | Ctrl | Alt  | GUI  |Lower |Space |Scroll|RgtClk|Space |Raise | Left | Down |  Up  |Right |
- * `-------------------------------------------------------------------------------------------------'
- */
-[_QWERTY] = LAYOUT_yakamoz(
-    KC_TAB,  KC_Q,    KC_W,    KC_E,    KC_R,    KC_T,                        KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,    KC_BSPC,
-    KC_ESC,  KC_A,    KC_S,    KC_D,    KC_F,    KC_G,                        KC_H,    KC_J,    KC_K,    KC_L,    KC_SCLN, KC_QUOT,
-    KC_LSFT, KC_Z,    KC_X,    KC_C,    KC_V,    KC_B,                        KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH, KC_ENT ,
-    KC_CAPS, KC_LCTL, KC_LALT, KC_LGUI, LOWER,   KC_SPC, KC_SCRL, KC_MS_BTN2, KC_SPC,  RAISE,   KC_LEFT, KC_DOWN, KC_UP,   KC_RGHT
-),
+    /* Qwerty
+    * ,-------------------------------------------------------------------------------------------------.
+    * |  Tab |   Q  |   W  |   E  |   R  |   T  |             |   Y  |   U  |   I  |   O  |   P  | Bksp |
+    * |------+------+------+------+------+------|             |------+------+------+------+------+------|
+    * |NPdEsc|   A  |   S  |   D  |   F  |   G  |             |   H  |   J  |   K  |   L  |   Ş  |   İ  |
+    * |------+------+------+------+------+------|             |------+------+------+------+------+------|
+    * |SftCps|   Z  |   X  |   C  |   V  |   B  |             |   N  |   M  |   Ö  |   Ç  |   .  |SftEtr|
+    * |------+------+------+------+------+------+-------------+------+------+------+------+------+------|
+    * |Sda|<>| Ctrl | Alt  |  OS  |Lowr|,|Space*|LftClk|RgtClk| Bksp |Rise|"| Left | Down |  Up  |Right |
+    * `-------------------------------------------------------------------------------------------------'
+    */
+    [_QWERTY] = LAYOUT_yakamoz(
+        KC_TAB,  KC_Q,    KC_W,    KC_E,    KC_R,    KC_T,    KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,    KC_BSPC,
+        LT(_NUMPAD, KC_ESC),  KC_A,    KC_S,    KC_D,    KC_F,    KC_G,    KC_H,    KC_J,    KC_K,    KC_L,    KC_SCLN, KC_QUOT,
+        LSFT_T(KC_CAPS), KC_Z,  KC_X,    KC_C,    KC_V,    KC_B,    KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH, RSFT_T(KC_ENT) /*KC_ENT*/,
+        LT(_SODA, KC_GRV), KC_LCTL, KC_LALT, KC_LGUI, LT(_LOWER, KC_BSLS), LT(_SPACE, KC_SPC), KC_MS_BTN1, KC_MS_BTN2, KC_BSPC, LT(_RAISE, KC_NONUS_BACKSLASH), KC_LEFT, KC_DOWN, KC_UP, KC_RGHT
+    ),
 
-/* Colemak
- * ,-----------------------------------------.             ,-----------------------------------------.
- * | Tab  |   Q  |   W  |   F  |   P  |   G  |             |   J  |   L  |   U  |   Y  |   ;  | Bksp |
- * |------+------+------+------+------+------|             |------+------+------+------+------+------|
- * | Esc  |   A  |   R  |   S  |   T  |   D  |             |   H  |   N  |   E  |   I  |   O  |  '   |
- * |------+------+------+------+------+------|             |------+------+------+------+------+------|
- * | Shift|   Z  |   X  |   C  |   V  |   B  |             |   K  |   M  |   ,  |   .  |   /  |Enter |
- * |------+------+------+------+------+------+-------------+------+------+------+------+------+------|
- * | Caps | Ctrl | Alt  | GUI  |Lower |Space |Scroll|RgtClk|Space |Raise | Left | Down |  Up  |Right |
- * `-------------------------------------------------------------------------------------------------'
- */
-[_COLEMAK] = LAYOUT_yakamoz(
-    KC_TAB,  KC_Q,    KC_W,    KC_F,    KC_P,    KC_G,                        KC_J,    KC_L,    KC_U,    KC_Y,    KC_SCLN, KC_BSPC,
-    KC_ESC,  KC_A,    KC_R,    KC_S,    KC_T,    KC_D,                        KC_H,    KC_N,    KC_E,    KC_I,    KC_O,    KC_QUOT,
-    KC_LSFT, KC_Z,    KC_X,    KC_C,    KC_V,    KC_B,                        KC_K,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH, KC_ENT ,
-    KC_CAPS, KC_LCTL, KC_LALT, KC_LGUI, LOWER,   KC_SPC, KC_SCRL, KC_MS_BTN2, KC_SPC,  RAISE,   KC_LEFT, KC_DOWN, KC_UP,   KC_RGHT
-),
+    /* Lower
+     * ,-------------------------------------------------------------------------------------------------.
+     * |   >  |   !  |   '  |   ^  |   +  |   %  |             |   &  |   /  |   (  |   )  |   =  | Bksp |
+     * |------+------+------+------+------+------|             |------+------+------+------+------+------|
+     * | Del  |  F1  |  F2  |  F3  |  F4  |  F5  |             |  F6  |   ?  |   _  |  Ğ   |  Ü   |  -   |
+     * |------+------+------+------+------+------|             |------+------+------+------+------+------|
+     * |      |  F7  |  F8  |  F9  |  F10 |  F11 |             |  F12 |  "$" |  "{" |  "}" |  <   |  ">" |
+     * |------+------+------+------+------+------+-------------+------+------+------+------+------+------|
+     * |      |      |      |      |      |      |LftClk|RgtClk|      |      |  "[" |  "]" |  '   |   "  |
+     * `-------------------------------------------------------------------------------------------------'
+     */
+    [_LOWER] = LAYOUT_yakamoz(
+        KC_TILD, KC_EXLM, KC_AT,   KC_HASH, KC_DLR,  KC_PERC, KC_CIRC, KC_AMPR,    KC_ASTR,    KC_LPRN, KC_RPRN, KC_BSPC,
+        KC_DEL,  KC_F1,   KC_F2,   KC_F3,   KC_F4,   KC_F5,   KC_F6,   KC_UNDS,    KC_PLUS,    KC_LBRC, KC_RBRC, KC_EQL,
+        _______, KC_F7,   KC_F8,   KC_F9,   KC_F10,  KC_F11,  KC_F12,  DOLLAR_SIGN, CURLY_OPEN, CURLY_CLOSE, KC_GRV, LSFT(KC_GRV),
+        _______, _______, _______, _______, _______, _______, KC_MS_BTN1, KC_MS_BTN2, _______, _______,   SQUARE_OPEN, SQUARE_CLOSE, LSFT(KC_2), KC_NONUS_BACKSLASH
+    ),
 
-/* Dvorak
- * ,-----------------------------------------.             ,-----------------------------------------.
- * | Tab  |   '  |   ,  |   .  |   P  |   Y  |             |   F  |   G  |   C  |   R  |   L  | Bksp |
- * |------+------+------+------+------+------|             |------+------+------+------+------+------|
- * | Esc  |   A  |   O  |   E  |   U  |   I  |             |   D  |   H  |   T  |   N  |   S  |  /   |
- * |------+------+------+------+------+------|             |------+------+------+------+------+------|
- * | Shift|   ;  |   Q  |   J  |   K  |   X  |             |   B  |   M  |   W  |   V  |   Z  |Enter |
- * |------+------+------+------+------+------+-------------+------+------+------+------+------+------|
- * | Caps | Ctrl | Alt  | GUI  |Lower |Space |Scroll|RgtClk|Space |Raise | Left | Down |  Up  |Right |
- * `-------------------------------------------------------------------------------------------------'
- */
-[_DVORAK] = LAYOUT_yakamoz(
-    KC_TAB,  KC_QUOT, KC_COMM, KC_DOT,  KC_P,    KC_Y,                        KC_F,    KC_G,    KC_C,    KC_R,    KC_L,    KC_BSPC,
-    KC_ESC,  KC_A,    KC_O,    KC_E,    KC_U,    KC_I,                        KC_D,    KC_H,    KC_T,    KC_N,    KC_S,    KC_SLSH,
-    KC_LSFT, KC_SCLN, KC_Q,    KC_J,    KC_K,    KC_X,                        KC_B,    KC_M,    KC_W,    KC_V,    KC_Z,    KC_ENT ,
-    KC_CAPS, KC_LCTL, KC_LALT, KC_LGUI, LOWER,   KC_SPC, KC_SCRL, KC_MS_BTN2, KC_SPC,  RAISE,   KC_LEFT, KC_DOWN, KC_UP,   KC_RGHT
-),
+    /* Raise
+     * ,-------------------------------------------------------------------------------------------------.
+     * |  <>| |   1  |   2  |   3  |   4  |   5  |             |   6  |   7  |   8  |   9  |   0  | Bksp |
+     * |------+------+------+------+------+------|             |------+------+------+------+------+------|
+     * |  Del |  F1  |  F2  |  F3  |  F4  |  F5  |             |  F6  |   *  |   -  | "\"  | "|"  |  ,   |
+     * |------+------+------+------+------+------|             |------+------+------+------+------+------|
+     * |      |  F7  |  F8  |  F9  |  F10 |  F11 |             |  F12 |   #  |   "  | "~"  | "`"  |  <>| |
+     * |------+------+------+------+------+------+-------------+------+------+------+------+------+------|
+     * |      |      |      |      |      |      |LftClk|RgtClk|      |      | Next | Vol- | Vol+ | Play |
+     * `-------------------------------------------------------------------------------------------------'
+     */
+    [_RAISE] = LAYOUT_yakamoz(
+        KC_GRV,  KC_1,    KC_2,    KC_3,    KC_4,    KC_5,    KC_6,    KC_7,    KC_8,    KC_9,    KC_0,    KC_BSPC,
+        KC_DEL,  KC_F1,   KC_F2,   KC_F3,   KC_F4,   KC_F5,   KC_F6,   KC_MINS, KC_EQL,  BACKSLASH, VERTICAL_PIPE, KC_BSLS,
+        _______, KC_F7,   KC_F8,   KC_F9,   KC_F10,  KC_F11,  KC_F12,  NUMBER_SIGN, KC_NUBS, TILDE, BACKTICK, KC_GRV,
+        _______, _______, _______, _______, _______, _______, KC_MS_BTN1, KC_MS_BTN2,_______, _______, KC_MNXT, KC_VOLD, KC_VOLU, KC_MPLY
+    ),
 
-/* Lower
- * ,-----------------------------------------.             ,-----------------------------------------.
- * |   ~  |   !  |   @  |   #  |   $  |   %  |             |   ^  |   &  |   *  |   (  |   )  |  Del |
- * |------+------+------+------+------+------|             |------+------+------+------+------+------|
- * | Del  |  F1  |  F2  |  F3  |  F4  |  F5  |             |  F6  |   _  |   +  |   {  |   }  |  |   |
- * |------+------+------+------+------+------|             |------+------+------+------+------+------|
- * |      |  F7  |  F8  |  F9  |  F10 |  F11 |             |  F12 |ISO ~ |ISO | | Home | End  |      |
- * |------+------+------+------+------+------+-------------+------+------+------+------+------+------|
- * |      |      |      |      |      |      |      |      |      |      | Next | Vol- | Vol+ | Play |
- * `-------------------------------------------------------------------------------------------------'
- */
-[_LOWER] = LAYOUT_yakamoz(
-    KC_TILD, KC_EXLM, KC_AT,   KC_HASH, KC_DLR,  KC_PERC,                   KC_CIRC, KC_AMPR,    KC_ASTR,    KC_LPRN, KC_RPRN, KC_DEL,
-    KC_DEL,  KC_F1,   KC_F2,   KC_F3,   KC_F4,   KC_F5,                     KC_F6,   KC_UNDS,    KC_PLUS,    KC_LCBR, KC_RCBR, KC_PIPE,
-    _______, KC_F7,   KC_F8,   KC_F9,   KC_F10,  KC_F11,                    KC_F12,  S(KC_NUHS), S(KC_NUBS), KC_HOME, KC_END,  _______,
-    _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,    KC_MNXT,    KC_VOLD, KC_VOLU, KC_MPLY
-),
+    /* Soda Layer. Adjust and other stuff
+     * ,-------------------------------------------------------------------------------------------------.
+     * |EepRST|BotLdr| Debug|Reboot|      |      |             |      |      |  Up  |      |      |      |
+     * |------+------+------+------+------+------|             |------+------+------+------+------+------|
+     * |      |BRGTH+| SAT+ | HUE+ |RGBMOD|  RGB |             |      | Left | Down |Right |      | Mute |
+     * |------+------+------+------+------+------|             |------+------+------+------+------+------|
+     * |      |BRGTH-| SAT- | HUE- |      |      |             |      |      | Next | Vol- | Vol+ | Play |
+     * |------+------+------+------+------+------+-------------+------+------+------+------+------+------|
+     * |      |      |      |      |      |MSC_N |AUD_N |M_TOGG|A_TOGG|      |      |      |Brght▼|Brght▲|
+     * `-------------------------------------------------------------------------------------------------'
+     */
+    [_SODA] = LAYOUT_yakamoz(
+        EE_CLR,  QK_BOOT, DB_TOGG, QK_RBT, _______, _______, _______, _______, KC_UP, _______, _______, _______,
+        _______, RGB_VAI, RGB_SAI, RGB_HUI, RGB_MOD, RGB_TOG, _______, KC_LEFT, KC_DOWN, KC_RGHT, _______, KC_MUTE,
+        _______, RGB_VAD, RGB_SAD, RGB_HUD, _______, _______, _______, _______, KC_MNXT, KC_VOLD, KC_VOLU, KC_MPLY,
+        _______, _______, _______, _______, _______, QK_MUSIC_MODE_NEXT, QK_AUDIO_VOICE_NEXT, QK_MUSIC_TOGGLE, QK_AUDIO_TOGGLE, _______, _______, _______, KC_BRMD, KC_BRMU
+    ),
 
-/* Raise
- * ,-----------------------------------------.             ,-----------------------------------------.
- * |   `  |   1  |   2  |   3  |   4  |   5  |             |   6  |   7  |   8  |   9  |   0  | DEL |
- * |------+------+------+------+------+------|             |------+------+------+------+------+------|
- * | Del  |  F1  |  F2  |  F3  |  F4  |  F5  |             |  F6  |   -  |   =  |   [  |   ]  |  \   |
- * |------+------+------+------+------+------|             |------+------+------+------+------+------|
- * |      |  F7  |  F8  |  F9  |  F10 |  F11 |             |  F12 |ISO # |ISO / |Pg Up |Pg Dn |      |
- * |------+------+------+------+------+------+-------------+------+------+------+------+------+------|
- * |      |      |      |      |      |      |      |      |      |      | Next | Vol- | Vol+ | Play |
- * `-------------------------------------------------------------------------------------------------'
- */
-[_RAISE] = LAYOUT_yakamoz(
-    KC_GRV,  KC_1,    KC_2,    KC_3,    KC_4,    KC_5,                      KC_6,    KC_7,    KC_8,    KC_9,    KC_0,    KC_DEL,
-    KC_DEL,  KC_F1,   KC_F2,   KC_F3,   KC_F4,   KC_F5,                     KC_F6,   KC_MINS, KC_EQL,  KC_LBRC, KC_RBRC, KC_BSLS,
-    _______, KC_F7,   KC_F8,   KC_F9,   KC_F10,  KC_F11,                    KC_F12,  KC_NUHS, KC_NUBS, KC_PGUP, KC_PGDN, _______,
-    _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, KC_MNXT, KC_VOLD, KC_VOLU, KC_MPLY
-),
+    /* Space Layer (Space Bar Layer Tap)
+     * ,-------------------------------------------------------------------------------------------------.
+     * |      |CMD+1 |CMD+2 |CMD+3 |CMD+4 |CMD+5 |             |CMD+6 |CMD+7 |CMD+8 |CMD+9 |CMD+0 |LCKOSX|
+     * |------+------+------+------+------+------|             |------+------+------+------+------+------|
+     * |      |      |      |      |      |      |             |      |      |      |  Up  |      |      |
+     * |------+------+------+------+------+------|             |------+------+------+------+------+------|
+     * |      |      |      |      |      |      |             |      |      | Left | Down |Right |      |
+     * |------+------+------+------+------+------+-------------+------+------+------+------+------+------|
+     * |      |      |      |      |      |      |LftClk|RgtClk|      |      |      |      |Brght▼|Brght▲|
+     * `-------------------------------------------------------------------------------------------------'
+     */
+    [_SPACE] = LAYOUT_yakamoz(
+        _______, LGUI(KC_1), LGUI(KC_2), LGUI(KC_3), LGUI(KC_4), LGUI(KC_5), LGUI(KC_6), LGUI(KC_7), LGUI(KC_8),  LGUI(KC_9), LGUI(KC_0), LOCKSCREEN,
+        _______, _______, _______, _______, _______, _______, _______, _______, _______, KC_UP,  _______, _______,
+        _______, _______, _______, _______, _______, _______, _______, _______, KC_LEFT, KC_DOWN, KC_RGHT, _______,
+        _______, _______, _______, _______, _______, _______, KC_MS_BTN1, KC_MS_BTN2, _______, _______, _______, _______, KC_BRMD, KC_BRMU
+    ),
 
-/* Adjust (Lower + Raise)
- * ----------------RGB CONTROL----------------
- * ,-----------------------------------------.             ,-----------------------------------------.
- * |      |BRGTH+| SAT+ | HUE+ |RGBMOD|  RGB |             |      |      |      |Qwerty|Colemk|Dvorak|
- * |------+------+------+------+------+------|             |------+------+------+------+------+------|
- * |      |BRGTH-| SAT- | HUE- |      |      |             |      |MSC_N |AUD_N |      |      |      |
- * |------+------+------+------+------+------|             |------+------+------+------+------+------|
- * |      |      |      |      |      |      |             |      |M_TOGG|A_TOGG|      |      |      |
- * |------+------+------+------+------+------+-------------+------+------+------+------+------+------|
- * |      |      |      |      |      |      | Reset|Debug |EE_Clr|      |      |      |      |      |
- * `-------------------------------------------------------------------------------------------------'
- */
-[_ADJUST] = LAYOUT_yakamoz(
-    _______, RGB_VAI, RGB_SAI, RGB_HUI, RGB_MOD, RGB_TOG,                   _______, _______,             _______,             QWERTY,  COLEMAK, DVORAK,
-    _______, RGB_VAD, RGB_SAD, RGB_HUD, _______, _______,                   _______, QK_MUSIC_MODE_NEXT,  QK_AUDIO_VOICE_NEXT, _______, _______, _______,
-    _______, _______, _______, _______, _______, _______,                   _______, QK_MUSIC_TOGGLE,     QK_AUDIO_TOGGLE,     _______, _______, _______,
-    _______, _______, _______, _______, _______, _______, QK_BOOT, DB_TOGG, EE_CLR,  _______,             _______,             _______, _______, _______
-)
+    /* Numpad Layer
+     * KC_PDOT is comma on the Turkish layout ¯\_(ツ)_/¯
+     * ,-------------------------------------------------------------------------------------------------.
+     * |      |      |      |      |      |      |             | Space|   7  |   8  |   9  |   -  | Bksp |
+     * |------+------+------+------+------+------+             |------+------+------+------+------+------|
+     * |      |      |      |      |      |      |             | Enter|   4  |   5  |   6  |   +  |   *  |
+     * |------+------+------+------+------+------|             |------+------+------+------+------+------|
+     * |      |      |      |      |      |      |             | Enter|   1  |   2  |   3  |   +  |   /  |
+     * |------+------+------+------+------+------+-------------+------+------+------+------+------+------|
+     * |      |      |      |      |      |      |LftClk|RgtClk| Bkspc|   0  |   0  |   .  |   ,  |   =  |
+     * `-------------------------------------------------------------------------------------------------'
+     */
+    [_NUMPAD] = LAYOUT_yakamoz(
+        _______, _______, _______, _______, _______, _______, KC_SPC, KC_P7, KC_P8, KC_P9, KC_PMNS, KC_BSPC,
+        _______, _______, _______, _______, _______, _______, KC_PENT, KC_P4, KC_P5, KC_P6, KC_PPLS, KC_PAST,
+        _______, _______, _______, _______, _______, _______, KC_PENT, KC_P1, KC_P2, KC_P3, KC_PPLS, KC_PSLS,
+        _______, _______, _______, _______, _______, _______, KC_MS_BTN1, KC_MS_BTN2, KC_BSPC,  KC_P0, KC_P0, KC_SLSH, KC_PDOT, KC_PEQL
+    ),
 
 };
-
-
-layer_state_t layer_state_set_user(layer_state_t state) {
-  return update_tri_layer_state(state, _LOWER, _RAISE, _ADJUST);
-}
-
-bool process_record_user(uint16_t keycode, keyrecord_t *record) {
-  switch (keycode) {
-    case QWERTY:
-      if (record->event.pressed) {
-        print("mode just switched to qwerty and this is a huge string\n");
-        set_single_persistent_default_layer(_QWERTY);
-      }
-      return false;
-      break;
-    case COLEMAK:
-      if (record->event.pressed) {
-        set_single_persistent_default_layer(_COLEMAK);
-      }
-      return false;
-      break;
-    case DVORAK:
-      if (record->event.pressed) {
-        set_single_persistent_default_layer(_DVORAK);
-      }
-      return false;
-      break;
-  }
-  return true;
-}
-
-
-
 
 
 
@@ -194,7 +208,7 @@ static const char PROGMEM star_wars_darth_vader[] = {0x00, 0x00, 0x00, 0x00, 0x0
 
 bool render_status(void) {
     oled_set_cursor(0, 0);
-    oled_write_raw_P(vs_code, sizeof(vs_code));
+    oled_write_raw_P(star_wars_darth_vader, sizeof(star_wars_darth_vader));
     oled_set_cursor(0, 9);
     oled_write_P(PSTR("L: "), false);
 
@@ -203,19 +217,22 @@ bool render_status(void) {
             oled_write_P(PSTR("QWERTY\n"), false);
             break;
         case 1:
-            oled_write_P(PSTR("COLEMAK\n"), false);
-            break;
-        case 2:
-            oled_write_P(PSTR("DVORAK\n"), false);
-            break;
-        case 3:
             oled_write_P(PSTR("LOWER\n"), false);
             break;
+        case 2:
+            oled_write_P(PSTR("RAISE\n"), false);
+            break;
+        case 3:
+            oled_write_P(PSTR("ADJUST\n"), false);
+            break;
         case 4:
-            oled_write_P(PSTR("RAISE \n"), false);
+            oled_write_P(PSTR("SPACE\n"), false);
             break;
         case 5:
-            oled_write_P(PSTR("ADJUST\n"), false);
+            oled_write_P(PSTR("SODA\n"), false);
+            break;
+        case 6:
+            oled_write_P(PSTR("NUMPAD\n"), false);
             break;
         default:
             // Or use the write_ln shortcut over adding '\n' to the end of your string

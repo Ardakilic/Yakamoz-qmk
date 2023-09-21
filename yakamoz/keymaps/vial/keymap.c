@@ -204,24 +204,24 @@ bool render_status(void) {
             break;
         case 1:
             oled_write_P(PSTR("COLEMAK\n"), false);
-            break;            
+            break;
         case 2:
             oled_write_P(PSTR("DVORAK\n"), false);
-            break;            
+            break;
         case 3:
             oled_write_P(PSTR("LOWER\n"), false);
-            break;            
+            break;
         case 4:
             oled_write_P(PSTR("RAISE \n"), false);
-            break;            
+            break;
         case 5:
             oled_write_P(PSTR("ADJUST\n"), false);
-            break;                                              
+            break;
         default:
             // Or use the write_ln shortcut over adding '\n' to the end of your string
             oled_write_ln_P(PSTR("Undefined"), false);
     }
- 
+
     // Host Keyboard LED Status
     led_t led_state = host_keyboard_led_state();
     oled_write_P(led_state.caps_lock ? PSTR("\rCaps: ON  ") : PSTR("\rCaps: OFF  "), false);
@@ -236,7 +236,7 @@ bool oled_task_kb(void) {
     }
     if (is_keyboard_master()) {
         render_status();  // Renders the current keyboard state (layer, lock, caps, scroll, etc)
-    } 
+    }
     return false;
 }
 

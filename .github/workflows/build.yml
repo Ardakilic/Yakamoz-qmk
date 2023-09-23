@@ -38,7 +38,7 @@ jobs:
       - name: Prepare vial folder
         run: cp -R yakamoz/ vial-qmk/keyboards/
 
-      - name: Build defaul keymap
+      - name: Build default keymap
         working-directory: ./qmk_firmware
         run: qmk compile -kb yakamoz -km default 
       - name: Archive
@@ -64,3 +64,12 @@ jobs:
         with:
           name: yakamoz-keyboard
           path: vial-qmk/yakamoz_vial.uf2
+
+      - name: Build ardakilic keymap
+        working-directory: ./qmk_firmware
+        run: qmk compile -kb yakamoz -km ardakilic 
+      - name: Archive
+        uses: actions/upload-artifact@v2
+        with:
+          name: yakamoz-keyboard
+          path: qmk_firmware/yakamoz_ardakilic.uf2
